@@ -80,7 +80,7 @@ port
 timeout: ``60``
     Time in seconds to wait for the device to respond. Default: 60 seconds.
 
-verify: ``True``
+verify_ssl: ``True``
     Either a boolean, in which case it controls whether we verify the NX-API
     TLS certificate, or a string, in which case it must be a path to a CA bundle
     to use. Defaults to ``True``.
@@ -224,7 +224,7 @@ def rpc(commands, method="cli", **kwargs):
     timeout: ``60``
         Time in seconds to wait for the device to respond. Default: 60 seconds.
 
-    verify: ``True``
+    verify_ssl: ``True``
         Either a boolean, in which case it controls whether we verify the NX-API
         TLS certificate, or a string, in which case it must be a path to a CA bundle
         to use. Defaults to ``True``.
@@ -281,7 +281,7 @@ def show(commands, raw_text=True, **kwargs):
     timeout: ``60``
         Time in seconds to wait for the device to respond. Default: 60 seconds.
 
-    verify: ``True``
+    verify_ssl: ``True``
         Either a boolean, in which case it controls whether we verify the NX-API
         TLS certificate, or a string, in which case it must be a path to a CA bundle
         to use. Defaults to ``True``.
@@ -384,7 +384,7 @@ def config(
     timeout: ``60``
         Time in seconds to wait for the device to respond. Default: 60 seconds.
 
-    verify: ``True``
+    verify_ssl: ``True``
         Either a boolean, in which case it controls whether we verify the NX-API
         TLS certificate, or a string, in which case it must be a path to a CA bundle
         to use. Defaults to ``True``.

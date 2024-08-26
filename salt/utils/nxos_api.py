@@ -18,7 +18,7 @@ RPC_INIT_KWARGS = [
     "password",
     "port",
     "timeout",
-    "verify",
+    "verify_ssl",
     "rpc_version",
 ]
 
@@ -40,7 +40,7 @@ def _prepare_connection(**nxos_api_kwargs):
         init_kwargs["transport"] = "https"
     if "port" not in init_kwargs:
         init_kwargs["port"] = 80 if init_kwargs["transport"] == "http" else 443
-    verify = init_kwargs.get("verify", True)
+    verify = init_kwargs.get("verify_ssl", True)
     if isinstance(verify, bool):
         init_kwargs["verify_ssl"] = verify
     else:
@@ -84,7 +84,7 @@ def rpc(commands, method="cli", **kwargs):
     timeout: ``60``
         Time in seconds to wait for the device to respond. Default: 60 seconds.
 
-    verify: ``True``
+    verify_ssl: ``True``
         Either a boolean, in which case it controls whether we verify the NX-API
         TLS certificate, or a string, in which case it must be a path to a CA bundle
         to use. Defaults to ``True``.

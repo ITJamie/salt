@@ -1051,7 +1051,7 @@ def pyeapi_nxos_api_args(**prev_kwargs):
     else:
         kwargs["port"] = 80 if kwargs["transport"] == "http" else 443
 
-    kwargs["verify"] = optional_args.get("verify")
+    kwargs["verify"] = optional_args.get("verify_ssl")
     prev_kwargs.update(kwargs)
     return prev_kwargs
 
