@@ -831,6 +831,14 @@ jobs:
         include: ${{ fromJSON(inputs.matrix)['macos'] }}
     steps:
 
+      - name: Configure a locally resolvable hostname
+        shell: bash
+        run: |
+          # Avoid the runner's unresolvable .local hostname during Salt lookups.
+          # https://github.com/actions/runner-images/issues/14568
+          sudo scutil --set HostName salt-ci
+          printf '%s\n' '127.0.0.1 salt-ci' | sudo tee -a /etc/hosts
+
       - name: "Throttle Builds"
         shell: bash
         run: |
