@@ -1,0 +1,53 @@
+# Fork-only experiment; not intended for the upstream fixture patch.
+name: Explicit Salt ID comparison
+on:
+  push:
+    branches: [codex/explicit-salt-ids]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    if: github.repository == 'ITJamie/salt'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONUNBUFFERED: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.11'
+      - name: Install test requirements
+        run: |
+          python -m pip install -r requirements/base.txt -r requirements/pytest.txt
+          python -m pip freeze > dependencies.txt
+      - name: Compare pinned fixture revisions on the same host
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          cp dependencies.txt artifacts/
+          for trial in 1 2; do
+            for revision in bd4ba523558993eb11ed15b86fe86819a6eb5f9a 0431ecb9919d0084b4a56eb237480bedb43f74d8; do
+              git restore --source="$revision" -- \
+                tests/pytests/unit/conftest.py \
+                tests/pytests/functional/loader/test_loaded_base_name.py
+              python .github/scripts/salt_id_fixture_benchmark.py \
+                "artifacts/${revision}-${trial}.json" "$revision"
+            done
+          done
+      - name: Retain measurements and failure diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: explicit-salt-ids-${{ matrix.os }}-${{ github.sha }}
+          path: artifacts/
+          if-no-files-found: error
